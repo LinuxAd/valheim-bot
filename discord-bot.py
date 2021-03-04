@@ -63,7 +63,7 @@ async def status(ctx):
 async def status(ctx):
     met = get_system_metrics()
     resp = f"System metrics for the valheim server:\n" \
-           f"cpu: {met.cpu}\n" \
+           f"cpu: {met.cpu}%\n" \
            f"mem: {met.mem}Gb\n" \
            f"root: {met.root}%" \
            f"valheim disk: {met.per}%"
