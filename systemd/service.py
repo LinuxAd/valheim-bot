@@ -36,8 +36,17 @@ class Service:
 
         out = run.decode()
         out_str = out.split()
+        x = 0
+        y = 0
         i = 0
         while i < len(out_str):
+
             if out_str[i] == "Active:":
-                return f"The {self.name} service is {out_str[i + 1]}"
+                x = i
+            if out_str[i] == "Docs:":
+                y = i
             i += 1
+
+        strings = out_str[x:y-1]
+
+        return f"The {self.name} service status is:\n{' '.join(strings)}"
