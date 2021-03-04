@@ -17,13 +17,17 @@ class Service:
                               shell=True, capture_output=True, text=True)
 
     @staticmethod
-    def __sub_check_output(cmd: str):
-        return subprocess.check_output(cmd.split())
+    def __sub_check_output(cmd: str) -> bytes:
+        try:
+            out = subprocess.check_output(cmd.split())
+        except subprocess.CalledProcessError as err:
+            out = err.stdout
+        return out
 
     def restart(self):
         cmd = self.__build_command("restart")
         out = self.__sub_check_output(cmd)
-        print(out)
+        print(out.decode())
 
     def check_status(self) -> str:
 
