@@ -1,6 +1,13 @@
 import psutil
 
 
+class Info:
+    def __init__(self, cpu: str, mem: float, per: float):
+        self.cpu = cpu
+        self.mem = mem
+        self.per = per
+
+
 class System:
 
     @staticmethod

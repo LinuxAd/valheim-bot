@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
+import time
 
 
 class Service:
@@ -24,10 +25,13 @@ class Service:
             out = err.stdout
         return out
 
-    def restart(self):
-        cmd = self.__build_command("restart")
+    def restart(self) -> str:
+        cmd = self.__build_command("stop")
+        self.__sub_check_output(cmd)
+        time.sleep(5)
+        cmd = self.__build_command("start")
         out = self.__sub_check_output(cmd)
-        print(out.decode())
+        return out.decode()
 
     def check_status(self) -> str:
 

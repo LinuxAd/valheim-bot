@@ -10,3 +10,5 @@ filelock==3.0.12
 
 pydbus~=0.6.0
 psutil~=5.8.0
+discord~=1.0.1
+python-dotenv~=0.15.0
