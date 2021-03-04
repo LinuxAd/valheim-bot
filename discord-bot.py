@@ -7,7 +7,7 @@ from tempfile import gettempdir
 from discord.ext import commands
 from dotenv import load_dotenv
 
-VALHEIM_SERVICE = "bluetooth"
+VALHEIM_SERVICE = "valheimserver"
 valheim = service.Service(VALHEIM_SERVICE)
 
 load_dotenv()
@@ -43,7 +43,8 @@ def get_system_metrics() -> sysinfo.Info:
     cpu = system.get_cpu_load()
     mem = system.get_memory()
     steam = system.get_part_usage("/home/steam")
-    x = sysinfo.Info(cpu, mem, steam)
+    root = system.get_part_usage("/")
+    x = sysinfo.Info(cpu, mem, root, steam)
     return x
 
 
@@ -52,20 +53,20 @@ async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 
-@bot.command(name='status')
+@bot.command(name='status', help="Gets the status of the Valheim server process")
 async def status(ctx):
-    await ctx.send(f"checking the status of {VALHEIM_SERVICE}")
     resp = check_status(valheim)
     await ctx.send(resp)
 
 
-@bot.command(name='system')
+@bot.command(name='system', help='Gets basic OS system metrics for the valheim server')
 async def status(ctx):
     met = get_system_metrics()
     resp = f"System metrics for the valheim server:\n" \
            f"cpu: {met.cpu}\n" \
            f"mem: {met.mem}Gb\n" \
-           f"disk: {met.per}%"
+           f"root: {met.root}%" \
+           f"valheim disk: {met.per}%"
     await ctx.send(resp)
 
 

@@ -2,9 +2,10 @@ import psutil
 
 
 class Info:
-    def __init__(self, cpu: str, mem: float, per: float):
+    def __init__(self, cpu: str, mem: float, root: float, per: float):
         self.cpu = cpu
         self.mem = mem
+        self.root = root
         self.per = per
 
 
