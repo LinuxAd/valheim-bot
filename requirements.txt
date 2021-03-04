@@ -7,3 +7,5 @@
 
 -i https://pypi.org/simple
 filelock==3.0.12
+
+pydbus~=0.6.0
