@@ -4,6 +4,12 @@ import subprocess
 import time
 
 
+class Status:
+    def __init__(self, active, loaded):
+        self.active = active
+        self.loaded = loaded
+
+
 class Service:
     def __init__(self, name):
         self.service_name = name + ".service"
