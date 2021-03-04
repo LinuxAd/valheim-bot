@@ -47,10 +47,10 @@ class Service:
 
             if out_str[i] == "Active:":
                 x = i
-            if out_str[i] == "Docs:":
+            if out_str[i] == "ago":
                 y = i
             i += 1
 
-        strings = out_str[x:y-1]
+        strings = out_str[x:y]
 
         return f"The {self.name} service status is:\n{' '.join(strings)}"
