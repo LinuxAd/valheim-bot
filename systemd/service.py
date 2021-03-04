@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
-import pydbus as dbus
+import subprocess
 
 
 class Service:
     def __init__(self, name):
         self.name = name+".service"
-        self.bus = dbus.SystemBus()
-        self.systemd = self.bus.get(".systemd1")
 
     def check_status(self):
-        self.systemd.StatusUnit(self.name)
+        cmd = subprocess.run(f"systemctl status {self.name}", capture_output=True, text=True)
+        print(cmd.stdout)

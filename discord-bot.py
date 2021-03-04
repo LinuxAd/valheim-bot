@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-from filelock import Timeout, FileLock
+from filelock import FileLock
 from systemd import service
 
 VALHEIM_SERVICE = "bluetooth"
+
 
 def create_lock(locktype: str) -> FileLock:
     lock_path = locktype + ".lock"
@@ -18,7 +19,6 @@ def main():
     print(valheim.check_status())
 
     lock.release()
-
 
 if __name__ == "__main__":
     main()
