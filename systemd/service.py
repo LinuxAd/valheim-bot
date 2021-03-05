@@ -72,7 +72,7 @@ class Service:
             if len(kv) == 2:
                 out_dict[kv[0]] = kv[1]
 
-        logging.info(out_dict)
+        logging.info(f"out_dict: {out_dict}")
 
         s = Status(
             out_dict["Description"],
