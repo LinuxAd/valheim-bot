@@ -65,11 +65,14 @@ class Service:
                                       shell=True,
                                       universal_newlines=True
                                       ).split("\n")
+        logging.info(out)
         out_dict = {}
         for line in str(out):
             kv = line.split("=", 1)
             if len(kv) == 2:
                 out_dict[kv[0]] = kv[1]
+
+        logging.info(out_dict)
 
         s = Status(
             out_dict["Description"],
