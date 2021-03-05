@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import logging
 import subprocess
 import time
 
@@ -44,14 +44,21 @@ class Service:
         cmd = self.__build_command("stop")
         self.__sub_run(cmd)
         time.sleep(1)
-        return self.check_status()
+        s = self.check_status()
+        while s.active == "active":
+            logging.info(f"{s.description} status is: {s.active}")
+            logging.info(f"waiting for {s.description} to stop")
+            time.sleep(2)
+            s = self.check_status()
+
+        return self.check_status().active
 
     def start(self) -> str:
         cmd = self.__build_command("start")
         out = self.__sub_check_output(cmd)
         return out.decode()
 
-    def check_status(self) -> str:
+    def check_status(self) -> Status:
 
         run = self.__sub_check_output(f"systemctl show {self.name} --no-page")
         out = run.decode()
@@ -69,4 +76,4 @@ class Service:
             out_dict["SubState"],
         )
 
-        return f"Status Report:\n\n{s}"
+        return s
