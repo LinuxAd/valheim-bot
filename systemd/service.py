@@ -64,9 +64,10 @@ class Service:
         out = subprocess.check_output(["systemctl", "show", {self.name}, "--no-page"],
                                       text=True,
                                       universal_newlines=True
-                                      ).split("\n")
+                                      )
         out_dict = {}
-        for line in out:
+        out_kv = str(out).split('\n')
+        for line in out_kv:
             kv = line.split("=", 1)
             if len(kv) == 2:
                 out_dict[kv[0]] = kv[1]
