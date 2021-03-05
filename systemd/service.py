@@ -16,7 +16,7 @@ class Service:
         self.name = name
 
     def __build_command(self, cmd: str) -> str:
-        return f"systemctl {cmd} {self.service_name}"
+        return f"sudo systemctl {cmd} {self.service_name}"
 
     @staticmethod
     def __sub_run(cmd: str):
@@ -31,10 +31,15 @@ class Service:
             out = err.stdout
         return out
 
-    def restart(self) -> str:
+    def stop(self) -> str:
         cmd = self.__build_command("stop")
         self.__sub_check_output(cmd)
-        time.sleep(5)
+        time.sleep(1)
+        cmd = self.__build_command("status")
+        out = self.__sub_check_output(cmd)
+        return out.decode()
+
+    def start(self) -> str:
         cmd = self.__build_command("start")
         out = self.__sub_check_output(cmd)
         return out.decode()

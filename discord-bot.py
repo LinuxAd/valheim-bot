@@ -6,14 +6,13 @@ import time
 from discord.ext import commands
 import logging
 from dotenv import load_dotenv
+import subprocess
 
-VALHEIM_SERVICE = "valheimserver"
-valheim = service.Service(VALHEIM_SERVICE)
 logging.basicConfig(level=logging.INFO)
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+VALHEIM_SERVICE = "valheimserver"
 bot = commands.Bot(command_prefix='!')
+valheim = service.Service(VALHEIM_SERVICE)
 
 
 def check_status(serv: service.Service):
@@ -21,11 +20,9 @@ def check_status(serv: service.Service):
     return stat
 
 
-def restart_service(serv: service.Service):
-    print(f"restarting {VALHEIM_SERVICE}")
-    serv.restart()
-    stat = serv.check_status()
-    print(f"status: {stat}")
+def valheim_backup():
+    out = subprocess.run("/home/steam/backup.sh".split(), shell=True, capture_output=True, text=True)
+    return out
 
 
 def get_system_metrics() -> sysinfo.Info:
@@ -51,14 +48,22 @@ async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 
-@bot.command(name='restart', help="Restarts the valheim server")
-async def restart_valheim(ctx):
+@bot.command(name='update', help="Updates and restarts the valheim server")
+async def update_valheim_server(ctx):
     m = ctx.message
-    await ctx.send(f"yes master {m.author.mention}")
-    await ctx.send(f"powered by {m.author}")
-    await ctx.send("restarting the valheim server service, I'll report back when done")
+    await ctx.send(f"ok {m.author.mention} updating the valheim server service, I'll report back when done")
+    await ctx.send("stopping server...")
+    stop = valheim.stop()
+    await ctx.send(f"stop output: {stop}")
     time.sleep(5)
-    await ctx.send("Just pretending - I don't trust you with this kind of power yet")
+    await ctx.send("backing up important server files")
+    backup = valheim_backup()
+    await ctx.send(f"backup script result: {backup}")
+    await status(ctx)
+    await ctx.send("starting valheim server")
+    resp = valheim.start
+    await ctx.send(resp)
+    await ctx.send(valheim.check_status())
 
 
 @bot.command(name='status', help="Gets the status of the Valheim server process")
@@ -84,7 +89,9 @@ async def status(ctx):
 
 
 def main():
-    bot.run(TOKEN)
+    load_dotenv()
+    token = os.getenv('DISCORD_TOKEN')
+    bot.run(token)
 
 
 if __name__ == "__main__":
