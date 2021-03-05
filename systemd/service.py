@@ -19,8 +19,9 @@ class Status:
                f"Restart: {self.restart}\n" \
                f"State: {self.substate}"
 
+
 class Service:
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.service_name = name + ".service"
         self.name = name
 
@@ -61,13 +62,12 @@ class Service:
 
     def check_status(self) -> Status:
 
-        out = subprocess.check_output(["systemctl", "show", {self.name}, "--no-page"],
+        out = subprocess.check_output(["systemctl", "show", str({self.service_name}), "--no-page"],
                                       text=True,
                                       universal_newlines=True
-                                      )
+                                      ).split('\n')
         out_dict = {}
-        out_kv = str(out).split('\n')
-        for line in out_kv:
+        for line in out:
             kv = line.split("=", 1)
             if len(kv) == 2:
                 out_dict[kv[0]] = kv[1]
