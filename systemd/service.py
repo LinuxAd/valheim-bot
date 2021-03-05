@@ -5,10 +5,19 @@ import time
 
 
 class Status:
-    def __init__(self, active, loaded):
+    def __init__(self,description, active, loaded, restart, substate):
+        self.description = description
         self.active = active
         self.loaded = loaded
+        self.restart = restart
+        self.substate = substate
 
+    def __str__(self):
+        return f"{self.description}\n\n" \
+               f"Active: {self.active}\n" \
+               f"Loaded: {self.loaded}\n" \
+               f"Restart: {self.restart}\n" \
+               f"State: {self.substate}"
 
 class Service:
     def __init__(self, name):
@@ -35,8 +44,8 @@ class Service:
         cmd = self.__build_command("stop")
         self.__sub_check_output(cmd)
         time.sleep(1)
-        cmd = self.__build_command("status")
-        out = self.__sub_check_output(cmd)
+        status = self.__build_command("status")
+        out = self.__sub_check_output(status)
         return out.decode()
 
     def start(self) -> str:
@@ -46,22 +55,20 @@ class Service:
 
     def check_status(self) -> str:
 
-        cmd = self.__build_command("status")
-        run = self.__sub_check_output(cmd)
-
+        run = self.__sub_check_output(f"systemctl show {self.name} --no-page")
         out = run.decode()
-        out_str = out.split()
-        x = 0
-        y = 0
-        i = 0
-        while i < len(out_str):
+        out_dict = {}
+        for line in out:
+            kv = line.split("=", 1)
+            if len(kv) == 2:
+                out_dict[kv[0]] = kv[1]
 
-            if out_str[i] == "Active:":
-                x = i
-            if out_str[i] == "ago":
-                y = i
-            i += 1
+        s = Status(
+            out_dict["Description"],
+            out_dict["ActiveState"],
+            out_dict["LoadState"],
+            out_dict["Restart"],
+            out_dict["SubState"],
+        )
 
-        strings = out_str[x:y]
-
-        return f"The {self.name} service status is:\n{' '.join(strings)}"
+        return f"Status Report:\n\n{s}"

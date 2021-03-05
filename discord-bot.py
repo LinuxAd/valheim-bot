@@ -12,7 +12,6 @@ logging.basicConfig(level=logging.INFO)
 
 VALHEIM_SERVICE = "valheimserver"
 bot = commands.Bot(command_prefix='!')
-valheim = service.Service(VALHEIM_SERVICE)
 
 
 def emoji_percent_thresholds(num: float) -> str:
@@ -33,8 +32,7 @@ class Valheim(commands.Cog):
 
     def __init__(self, b: commands.Bot, serv: service.Service):
         self.bot = b
-        self.__last_member = None
-        self.serv = serv
+        self.__serv = serv
 
     @staticmethod
     def backup():
@@ -46,17 +44,26 @@ class Valheim(commands.Cog):
         m = ctx.message
         await ctx.send(f"ok {m.author.mention} updating the valheim server service, I'll report back when done")
         await ctx.send("stopping server...")
-        stop = self.serv.stop()
-        await ctx.send(f"stop output: {stop}")
+        self.__serv.stop()
+        await ctx.send(self.__serv.check_status())
         time.sleep(5)
         await ctx.send("backing up important server files")
         backup = self.backup()
-        await ctx.send(f"backup script result: {backup}")
+        if backup.returncode != 0:
+            await ctx.send("backup went horribly wrong")
+            logging.info(f"return code from backup: {backup.returncode}")
+            logging.info(f"output from backup: {backup.stdout} {backup.stderr}")
+            await ctx.send(f"result: {backup.stdout} {backup.stderr}")
+            return
+
+        for line in backup.stdout:
+            await ctx.send(line)
+
         await self.status(ctx)
         await ctx.send("starting valheim server")
-        resp = self.serv.start
+        resp = self.__serv.start
         await ctx.send(resp)
-        await ctx.send(self.serv.check_status())
+        await ctx.send(self.__serv.check_status())
 
     @commands.command(pass_context=True, help='Gets basic OS system metrics for the valheim server')
     async def status(self, ctx):
@@ -75,14 +82,15 @@ class Valheim(commands.Cog):
 
     @commands.command(pass_context=True, help="Gets the status of the Valheim server process")
     async def status(self, ctx):
-        await ctx.send(self.serv.check_status())
+        await ctx.send(self.__serv.check_status())
 
 
 def main():
+    valheim = service.Service(VALHEIM_SERVICE)
 
     @bot.event
     async def on_ready():
-        print(f'{bot.user.name} has connected to Discord!')
+        logging.info(f'{bot.user.name} has connected to Discord!')
 
     load_dotenv()
     token = os.getenv('DISCORD_TOKEN')
