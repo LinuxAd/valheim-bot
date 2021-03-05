@@ -86,9 +86,8 @@ def main():
 
     load_dotenv()
     token = os.getenv('DISCORD_TOKEN')
-    bot.run(token)
-
     bot.add_cog(Valheim(bot, valheim))
+    bot.run(token)
 
 
 if __name__ == "__main__":
