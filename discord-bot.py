@@ -68,7 +68,7 @@ class Valheim(commands.Cog):
         await ctx.send(f"{fin_status.description} is {fin_status.active}")
 
     @commands.command(pass_context=True, help='Gets basic OS system metrics for the valheim server')
-    async def status(self, ctx):
+    async def system(self, ctx):
         met = sysinfo.Info()
         cpu_e = emoji_percent_thresholds(met.cpu)
         mem_e = emoji_percent_thresholds(met.mem_per)
@@ -85,7 +85,7 @@ class Valheim(commands.Cog):
     @commands.command(pass_context=True, help="Gets the status of the Valheim server process")
     async def status(self, ctx):
         s = self.__serv.check_status()
-        await ctx.send(str(self.__serv.check_status()))
+        await ctx.send(str(s))
 
 
 def main():
