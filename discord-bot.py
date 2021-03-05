@@ -11,7 +11,7 @@ import subprocess
 logging.basicConfig(level=logging.INFO)
 
 VALHEIM_SERVICE = "valheimserver"
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='odin')
 
 
 def emoji_percent_thresholds(num: float) -> str:
