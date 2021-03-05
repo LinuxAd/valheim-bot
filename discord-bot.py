@@ -2,11 +2,14 @@
 from systemd import service
 import sysinfo
 import os
+import time
 from discord.ext import commands
+import logging
 from dotenv import load_dotenv
 
 VALHEIM_SERVICE = "valheimserver"
 valheim = service.Service(VALHEIM_SERVICE)
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -46,6 +49,15 @@ def emoji_percent_thresholds(num: float) -> str:
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
+
+
+@bot.command(name='restart', help="Restarts the valheim server")
+async def restart_valheim(ctx):
+    await ctx.send(f"yes master {0.author.mention}")
+    await ctx.send(f"powered by {0.author}")
+    await ctx.send("restarting the valheim server service, I'll report back when done")
+    time.sleep(5)
+    await ctx.send("Just pretending - I don't trust you with this kind of power yet")
 
 
 @bot.command(name='status', help="Gets the status of the Valheim server process")
