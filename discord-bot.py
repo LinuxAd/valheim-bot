@@ -77,7 +77,7 @@ class Valheim(commands.Cog):
 
         resp = f"System metrics for the valheim server:\n" \
                f"{cpu_e} cpu: {met.cpu}%\n" \
-               f"mem:{mem_e} {met.mem_per} {met.mem}Gb\n" \
+               f"{mem_e} mem: {met.mem_per}% {met.mem}Gb\n" \
                f"{root_e} root: {met.root}%\n" \
                f"{v_e} valheim disk: {met.steam}%"
         await ctx.send(resp)
@@ -85,7 +85,12 @@ class Valheim(commands.Cog):
     @commands.command(pass_context=True, help="Gets the status of the Valheim server process")
     async def status(self, ctx):
         s = self.__serv.check_status()
-        await ctx.send(str(s))
+        msg = f"{s.description}\n\n" \
+              f"Active: {s.active}\n" \
+              f"Loaded: {s.loaded}\n" \
+              f"Restart: {s.restart}\n" \
+              f"State: {s.substate}"
+        await ctx.send(msg)
 
 
 def main():
