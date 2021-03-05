@@ -42,11 +42,9 @@ class Service:
 
     def stop(self) -> str:
         cmd = self.__build_command("stop")
-        self.__sub_check_output(cmd)
+        self.__sub_run(cmd)
         time.sleep(1)
-        status = self.__build_command("status")
-        out = self.__sub_check_output(status)
-        return out.decode()
+        return self.check_status()
 
     def start(self) -> str:
         cmd = self.__build_command("start")
