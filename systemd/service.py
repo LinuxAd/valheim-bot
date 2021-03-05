@@ -45,6 +45,7 @@ class Service:
         self.__sub_run(cmd)
         time.sleep(1)
         s = self.check_status()
+
         while s.active == "active":
             logging.info(f"{s.description} status is: {s.active}")
             logging.info(f"waiting for {s.description} to stop")
@@ -60,10 +61,10 @@ class Service:
 
     def check_status(self) -> Status:
 
-        run = self.__sub_check_output(f"systemctl show {self.name} --no-page")
-        out = run.decode()
+        out = self.__sub_check_output(f"systemctl show {self.name} --no-page".split(),
+                                      universal_newlines=True).split("\n")
         out_dict = {}
-        for line in out:
+        for line in str(out):
             kv = line.split("=", 1)
             if len(kv) == 2:
                 out_dict[kv[0]] = kv[1]
