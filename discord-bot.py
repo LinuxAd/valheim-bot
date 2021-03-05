@@ -59,7 +59,7 @@ def emoji_percent_thresholds(num: float) -> str:
     elif num > 70:
         color = "red"
 
-    return f":{color}_{emoji}"
+    return f":{color}_{emoji}:"
 
 
 @bot.event
