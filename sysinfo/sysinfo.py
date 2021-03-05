@@ -3,9 +3,9 @@ import psutil
 
 class Info:
     def __init__(self):
-        self.cpu = System.get_cpu_load
-        self.mem = System.get_memory
-        self.mem_per = System.get_memory_percent
+        self.cpu = System.get_cpu_load()
+        self.mem = System.get_memory()
+        self.mem_per = System.get_memory_percent()
         self.root = System.get_part_usage("/")
         self.steam = System.get_part_usage("/home/steam")
 
