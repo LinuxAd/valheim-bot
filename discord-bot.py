@@ -48,6 +48,20 @@ def get_system_metrics() -> sysinfo.Info:
     return x
 
 
+def emoji_percent_thresholds(num: float) -> str:
+    color = "green"
+    emoji = "circle"
+
+    if num < 30.0:
+        color = "green"
+    elif 30.0 < num < 70.0:
+        color = "yellow"
+    elif num > 70:
+        color = "red"
+
+    return f":{color}_{emoji}"
+
+
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
@@ -62,11 +76,15 @@ async def status(ctx):
 @bot.command(name='system', help='Gets basic OS system metrics for the valheim server')
 async def status(ctx):
     met = get_system_metrics()
+    cpu_e = emoji_percent_thresholds(float(met.cpu))
+    root_e = emoji_percent_thresholds(float(met.root))
+    v_e = emoji_percent_thresholds(float(met.per))
+
     resp = f"System metrics for the valheim server:\n" \
-           f"cpu: {met.cpu}%\n" \
+           f"{cpu_e} cpu: {met.cpu}%\n" \
            f"mem: {met.mem}Gb\n" \
-           f"root: {met.root}%" \
-           f"valheim disk: {met.per}%"
+           f"{root_e} root: {met.root}%\n" \
+           f"{v_e} valheim disk: {met.per}%"
     await ctx.send(resp)
 
 
