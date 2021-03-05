@@ -53,8 +53,9 @@ async def on_ready():
 
 @bot.command(name='restart', help="Restarts the valheim server")
 async def restart_valheim(ctx):
-    await ctx.send(f"yes master {0.author.mention}")
-    await ctx.send(f"powered by {0.author}")
+    m = ctx.message
+    await ctx.send(f"yes master {m.author.mention}")
+    await ctx.send(f"powered by {m.author}")
     await ctx.send("restarting the valheim server service, I'll report back when done")
     time.sleep(5)
     await ctx.send("Just pretending - I don't trust you with this kind of power yet")
