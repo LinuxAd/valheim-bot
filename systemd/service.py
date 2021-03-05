@@ -61,13 +61,12 @@ class Service:
 
     def check_status(self) -> Status:
 
-        out = subprocess.check_output(f"systemctl show {self.name} --no-page".split(),
-                                      shell=True,
+        out = subprocess.check_output(["systemctl", "show", {self.name}, "--no-page"],
+                                      text=True,
                                       universal_newlines=True
                                       ).split("\n")
-        logging.info(out)
         out_dict = {}
-        for line in str(out):
+        for line in out:
             kv = line.split("=", 1)
             if len(kv) == 2:
                 out_dict[kv[0]] = kv[1]
