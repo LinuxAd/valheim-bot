@@ -45,7 +45,8 @@ class Valheim(commands.Cog):
         await ctx.send(f"ok {m.author.mention} updating the valheim server service, I'll report back when done")
         await ctx.send("stopping server...")
         self.__serv.stop()
-        await ctx.send(self.__serv.check_status())
+        s = self.__serv.check_status()
+        await ctx.send(f"{s.description} is {s.active}")
         time.sleep(5)
         await ctx.send("backing up important server files")
         backup = self.backup()
@@ -63,7 +64,8 @@ class Valheim(commands.Cog):
         await ctx.send("starting valheim server")
         resp = self.__serv.start
         await ctx.send(resp)
-        await ctx.send(self.__serv.check_status())
+        fin_status = self.__serv.check_status()
+        await ctx.send(f"{fin_status.description} is {fin_status.active}")
 
     @commands.command(pass_context=True, help='Gets basic OS system metrics for the valheim server')
     async def status(self, ctx):
