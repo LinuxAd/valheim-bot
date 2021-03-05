@@ -2,17 +2,18 @@ import psutil
 
 
 class Info:
-    def __init__(self, cpu: str, mem: float, root: float, per: float):
-        self.cpu = cpu
-        self.mem = mem
-        self.root = root
-        self.per = per
+    def __init__(self):
+        self.cpu = System.get_cpu_load
+        self.mem = System.get_memory
+        self.mem_per = System.get_memory_percent
+        self.root = System.get_part_usage("/")
+        self.steam = System.get_part_usage("/home/steam")
 
 
 class System:
 
     @staticmethod
-    def get_cpu_load() -> str:
+    def get_cpu_load() -> float:
         return psutil.cpu_percent()
 
     @staticmethod
@@ -27,6 +28,11 @@ class System:
     def get_memory(cls) -> float:
         mem = psutil.virtual_memory()
         return cls.__to_gb(mem.available)
+
+    @staticmethod
+    def get_memory_percent() -> float:
+        mem = psutil.virtual_memory()
+        return mem.percent
 
     @staticmethod
     def get_part_usage(mount: str) -> float:
