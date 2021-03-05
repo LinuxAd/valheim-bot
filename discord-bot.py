@@ -59,9 +59,8 @@ class Valheim(commands.Cog):
 
         else:
             await ctx.send(backup.stdout)
-
-        await self.status(ctx)
-        await ctx.send("starting valheim server")
+        
+        await ctx.send("updating valheim server")
         resp = self.__serv.start
         await ctx.send(resp)
         fin_status = self.__serv.check_status()

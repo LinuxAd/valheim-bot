@@ -62,7 +62,7 @@ class Service:
 
     def check_status(self) -> Status:
 
-        out = subprocess.check_output(["systemctl", "show", str({self.service_name}), "--no-page"],
+        out = subprocess.check_output(["systemctl", "show", self.service_name, "--no-page"],
                                       text=True,
                                       universal_newlines=True
                                       ).split('\n')
