@@ -18,11 +18,11 @@ def emoji_percent_thresholds(num: float) -> str:
     color = "green"
     emoji = "circle"
 
-    if num < 30.0:
+    if num < 70.0:
         color = "green"
-    elif 30.0 < num < 70.0:
+    elif 70.0 < num < 90.0:
         color = "yellow"
-    elif num > 70:
+    elif num > 90:
         color = "red"
 
     return f":{color}_{emoji}:"
@@ -85,7 +85,7 @@ class Valheim(commands.Cog):
     @commands.command(pass_context=True, help="Gets the status of the Valheim server process")
     async def status(self, ctx):
         s = self.__serv.check_status()
-        msg = f"{s.description}\n\n" \
+        msg = f"Valheim Server\n\n" \
               f"Active: {s.active}\n" \
               f"Loaded: {s.loaded}\n" \
               f"Restart: {s.restart}\n" \
