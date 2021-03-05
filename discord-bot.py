@@ -84,7 +84,8 @@ class Valheim(commands.Cog):
 
     @commands.command(pass_context=True, help="Gets the status of the Valheim server process")
     async def status(self, ctx):
-        await ctx.send(self.__serv.check_status())
+        s = self.__serv.check_status()
+        await ctx.send(str(self.__serv.check_status()))
 
 
 def main():
