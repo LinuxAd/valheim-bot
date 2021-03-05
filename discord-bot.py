@@ -57,8 +57,8 @@ class Valheim(commands.Cog):
             await ctx.send(f"result: {backup.stdout} {backup.stderr}")
             return
 
-        for line in backup.stdout:
-            await ctx.send(line)
+        else:
+            await ctx.send(backup.stdout)
 
         await self.status(ctx)
         await ctx.send("starting valheim server")
