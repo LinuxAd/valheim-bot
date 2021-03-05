@@ -61,8 +61,10 @@ class Service:
 
     def check_status(self) -> Status:
 
-        out = self.__sub_check_output(f"systemctl show {self.name} --no-page".split(),
-                                      universal_newlines=True).split("\n")
+        out = subprocess.check_output(f"systemctl show {self.name} --no-page".split(),
+                                      shell=True,
+                                      universal_newlines=True
+                                      ).split("\n")
         out_dict = {}
         for line in str(out):
             kv = line.split("=", 1)
