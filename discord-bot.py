@@ -49,6 +49,7 @@ class Valheim(commands.Cog):
         s = self.__serv.check_status()
         if s.active == "active":
             await ctx.send("could not stop server, preventing update for safety")
+            return
 
         await ctx.send(f"{s.description} is {s.active}")
         time.sleep(3)
