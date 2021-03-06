@@ -46,13 +46,12 @@ class Valheim(commands.Cog):
         await ctx.send("stopping server...")
         stopped = self.__serv.stop()
 
-        if stopped.find("error") != -1:
-            await ctx.send(f"something went wrong: {stopped}")
-            return
-
         s = self.__serv.check_status()
+        if s.active == "active":
+            await ctx.send("could not stop server, preventing update for safety")
+
         await ctx.send(f"{s.description} is {s.active}")
-        time.sleep(5)
+        time.sleep(3)
         await ctx.send("backing up important server files")
         backup = self.backup()
         if backup.returncode != 0:
