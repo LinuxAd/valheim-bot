@@ -44,7 +44,9 @@ class Service:
 
     def stop(self) -> str:
         cmd = self.__build_command("stop")
+        logging.info(f"running \"{cmd}\"")
         out = self.__sub_run(cmd)
+        logging.info(f"output: \"{out}\"")
         if out.returncode != 0:
             return out.stdout
         time.sleep(1)
