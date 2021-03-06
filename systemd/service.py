@@ -32,7 +32,7 @@ class Service:
     @staticmethod
     def __sub_run(cmd: str):
         return subprocess.run(cmd.split(),
-                              shell=True, capture_output=True, text=True)
+                              capture_output=True, text=True)
 
     @staticmethod
     def __sub_check_output(cmd: str) -> bytes:
@@ -46,7 +46,12 @@ class Service:
         cmd = self.__build_command("stop")
         logging.info(f"running \"{cmd}\"")
         out = self.__sub_run(cmd)
-        logging.info(f"output: \"{out}\"")
+        
+        log = out.stdout
+        if out.stdout = "":
+            log = out.stderr
+        logging.info(f"output: \"{log}\"")
+
         if out.returncode != 0:
             return out.stdout
         time.sleep(1)
