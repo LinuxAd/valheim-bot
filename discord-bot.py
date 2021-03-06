@@ -45,8 +45,8 @@ class Valheim(commands.Cog):
         await ctx.send(f"ok {m.author.mention} updating the valheim server service, I'll report back when done")
         await ctx.send("stopping server...")
         stopped = self.__serv.stop()
-        
-        if "error" is in stopped:
+
+        if "error" in stopped:
             await ctx.send(f"something went wrong: {stopped}")
             return
 
