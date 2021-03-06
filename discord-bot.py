@@ -46,7 +46,7 @@ class Valheim(commands.Cog):
         await ctx.send("stopping server...")
         stopped = self.__serv.stop()
 
-        if "error" in stopped:
+        if stopped.find("error") != -1::
             await ctx.send(f"something went wrong: {stopped}")
             return
 

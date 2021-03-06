@@ -51,8 +51,7 @@ class Service:
         
         i = 0
         while self.check_status().active == "active" and i < 3: # only attempt 3 times
-            logging.info(f"{s.description} status is: {s.active}")
-            logging.info(f"waiting for {s.description} to stop")
+            logging.info(f"waiting for {self.status.description} to stop")
             time.sleep(2)
             self.status = self.check_status()
             i += 1
@@ -86,5 +85,6 @@ class Service:
             out_dict["Restart"],
             out_dict["SubState"],
         )
+        logging.info(f"{s.description} status is: {s.active}")
 
         return s
