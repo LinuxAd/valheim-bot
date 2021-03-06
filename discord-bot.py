@@ -44,7 +44,12 @@ class Valheim(commands.Cog):
         m = ctx.message
         await ctx.send(f"ok {m.author.mention} updating the valheim server service, I'll report back when done")
         await ctx.send("stopping server...")
-        self.__serv.stop()
+        stopped = self.__serv.stop()
+        
+        if "error" is in stopped:
+            await ctx.send(f"something went wrong: {stopped}")
+            return
+
         s = self.__serv.check_status()
         await ctx.send(f"{s.description} is {s.active}")
         time.sleep(5)
@@ -101,6 +106,11 @@ def main():
 
     load_dotenv()
     token = os.getenv('DISCORD_TOKEN')
+
+    if token == "":
+        logging.error("token value was nil")
+        exit(1)
+
     bot.add_cog(Valheim(bot, valheim))
     bot.run(token)
 

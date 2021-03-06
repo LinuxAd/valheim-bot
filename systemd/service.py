@@ -24,6 +24,7 @@ class Service:
     def __init__(self, name: str):
         self.service_name = name + ".service"
         self.name = name
+        self.status = self.check_status()
 
     def __build_command(self, cmd: str) -> str:
         return f"sudo systemctl {cmd} {self.service_name}"
@@ -43,17 +44,23 @@ class Service:
 
     def stop(self) -> str:
         cmd = self.__build_command("stop")
-        self.__sub_run(cmd)
+        out = self.__sub_run(cmd)
+        if out.returncode != 0:
+            return out.stdout
         time.sleep(1)
-        s = self.check_status()
-
-        while s.active == "active":
+        
+        i = 0
+        while self.check_status().active == "active" and i < 3: # only attempt 3 times
             logging.info(f"{s.description} status is: {s.active}")
             logging.info(f"waiting for {s.description} to stop")
             time.sleep(2)
-            s = self.check_status()
+            self.status = self.check_status()
+            i += 1
 
-        return self.check_status().active
+        if self.status.active == "active":
+            return "error - service still active"
+        else:
+            return self.status.active
 
     def start(self) -> str:
         cmd = self.__build_command("start")
