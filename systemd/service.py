@@ -48,7 +48,7 @@ class Service:
         out = self.__sub_run(cmd)
         
         log = out.stdout
-        if out.stdout = "":
+        if out.stdout == "":
             log = out.stderr
         logging.info(f"output: \"{log}\"")
 
