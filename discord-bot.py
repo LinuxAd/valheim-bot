@@ -28,47 +28,56 @@ def emoji_percent_thresholds(num: float) -> str:
     return f":{color}_{emoji}:"
 
 
+def emoji_status(status: str, good: str) -> str:
+    if status == good:
+        return ":white_check_mark:"
+    else:
+        return ":bangbang:"
+
+
 class Valheim(commands.Cog):
 
     def __init__(self, b: commands.Bot, serv: service.Service):
         self.bot = b
         self.__serv = serv
 
-    @staticmethod
-    def backup():
+    @commands.command(pass_context=True, help="Backup the Valheim server before you do something stupid")
+    def backup(self, ctx) -> int:
         out = subprocess.run("/home/steam/backup.sh".split(), shell=True, capture_output=True, text=True)
-        return out
+        if out.returncode != 0:
+            await ctx.send(":fire: backup went horribly wrong! :fire:")
+            logging.info(f"return code from backup: {out.returncode}")
+            logging.info(f"output from backup: {out.stdout} {out.stderr}")
+            await ctx.send(f"result: {out.stdout} {out.stderr}")
+            return
+        else:
+            await ctx.send(":100: Backed up successfully :100:")
+        return out.returncode
 
     @commands.command(pass_context=True, help="Updates and restarts the valheim server")
     async def update(self, ctx):
         m = ctx.message
-        await ctx.send(f"ok {m.author.mention} updating the valheim server service, I'll report back when done")
-        await ctx.send("stopping server...")
-        stopped = self.__serv.stop()
-
+        logging.info(f"update started by {m.author}")
+        await ctx.send(f"Starting an update of the valheim server service, I'll report back when done")
+        await ctx.send("Stopping server...")
+        self.__serv.stop()
+        self.status(ctx)
+        time.sleep(2)
         s = self.__serv.check_status()
         if s.active == "active":
-            await ctx.send("could not stop server, preventing update for safety")
+            await ctx.send(f"Could not stop server process, :cry: status is: {s.active}")
             return
-
-        await ctx.send(f"{s.description} is {s.active}")
-        time.sleep(3)
         await ctx.send("backing up important server files")
-        backup = self.backup()
-        if backup.returncode != 0:
-            await ctx.send("backup went horribly wrong")
-            logging.info(f"return code from backup: {backup.returncode}")
-            logging.info(f"output from backup: {backup.stdout} {backup.stderr}")
-            await ctx.send(f"result: {backup.stdout} {backup.stderr}")
+
+        b = self.backup()
+        if b == 0:
             return
 
-        else:
-            await ctx.send(backup.stdout)
-        
-        await ctx.send("updating valheim server")
-        resp = self.__serv.start()
-        fin_status = self.__serv.check_status()
-        await ctx.send(f"{fin_status.description} is {fin_status.active}")
+        self.status(ctx)
+        await ctx.send(":100: Updating valheim server :100:")
+        resp = self.__serv.start
+        await ctx.send(resp)
+        self.status(ctx)
 
     @commands.command(pass_context=True, help='Gets basic OS system metrics for the valheim server')
     async def system(self, ctx):
@@ -88,11 +97,12 @@ class Valheim(commands.Cog):
     @commands.command(pass_context=True, help="Gets the status of the Valheim server process")
     async def status(self, ctx):
         s = self.__serv.check_status()
+        substate_emoji = emoji_status(s.substate, "running")
+        active_emoji = emoji_status(s.active, "active")
+
         msg = f"Valheim Server\n\n" \
-              f"Active: {s.active}\n" \
-              f"Loaded: {s.loaded}\n" \
-              f"Restart: {s.restart}\n" \
-              f"State: {s.substate}"
+              f"{active_emoji} Status: {s.active}\n" \
+              f"{substate_emoji}State: {s.substate}"
         await ctx.send(msg)
 
 
