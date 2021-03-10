@@ -42,7 +42,7 @@ class Valheim(commands.Cog):
         self.__serv = serv
 
     @commands.command(pass_context=True, help="Backup the Valheim server before you do something stupid")
-    def backup(self, ctx) -> int:
+    async def backup(self, ctx) -> int:
         out = subprocess.run("/home/steam/backup.sh".split(), shell=True, capture_output=True, text=True)
         if out.returncode != 0:
             await ctx.send(":fire: backup went horribly wrong! :fire:")
